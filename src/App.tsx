@@ -1,5 +1,5 @@
+// @ts-nocheck
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { fetchUser } from './actions/userActions';
@@ -11,15 +11,11 @@ import {
   resumeSong,
 } from './actions/songActions';
 
-import ArtWork from './components/ArtWork';
-import Footer from './components/Footer';
-import Header from './components/Header';
-import MainHeader from './components/MainHeader';
-import MainView from './components/MainView';
-import SideMenu from './components/SideMenu';
-import UserPlaylists from './components/UserPlaylists';
+import { Player, Utility } from './components/molecules';
+import { MainHeader, SideMenu } from './components/organisms';
+import { MainView } from './containers';
 
-import './App.css';
+import "./App.css";
 
 class App extends Component {
   static audio;
@@ -46,21 +42,20 @@ class App extends Component {
       ];
       return `https://accounts.spotify.com/authorize?client_id=${clientId}&scope=${scopes.join('%20')}&response_type=token&redirect_uri=${redirectUri}`;
     }
-    function getHashParams() {
+    function getAccessToken() {
       const hashParams = {};
       const regex = /([^&;=]+)=?([^&;]*)/g;
-      const q = window.location.hash.substring(1);
-      let e;
+      const queries = window.location.hash.substring(1);
   
-      e = regex.exec(q);
-      while (e) {
-        hashParams[e[1]] = decodeURIComponent(e[2]);
-        e = regex.exec(q);
+      let element = regex.exec(queries);
+      while (element) {
+        hashParams[element[1]] = decodeURIComponent(element[2]);
+        element = regex.exec(queries);
       }
       return hashParams;
     }
 
-    const hashParams = getHashParams();
+    let hashParams: any = getAccessToken()
     if (!hashParams.access_token) {
       window.location.href = getAuthorisationUrl();
     } else {
@@ -117,34 +112,33 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <div className="app-container">
-          <div className="left-side-section">
-            <SideMenu />
-            <UserPlaylists />
-            <ArtWork />
-          </div>
-          <div className="main-section">
-            <Header />
-            <div className="main-section-container">
-              <MainHeader
-                pauseSong={this.pauseSong}
-                resumeSong={this.resumeSong}
-              />{' '}
-              <MainView
-                pauseSong={this.pauseSong}
-                resumeSong={this.resumeSong}
-                audioControl={this.audioControl}
-              />
-            </div>
-          </div>
-          <Footer
-            stopSong={this.stopSong}
-            pauseSong={this.pauseSong}
-            resumeSong={this.resumeSong}
-            audioControl={this.audioControl}
-          />
+      <div className="app">
+        <div className="side-section">
+          <SideMenu />
         </div>
+
+        <div className="main-section">
+          <Utility />
+
+          <div className="main-section-container">
+            <MainHeader
+              pauseSong={this.pauseSong}
+              resumeSong={this.resumeSong}
+            />{' '}
+            <MainView
+              pauseSong={this.pauseSong}
+              resumeSong={this.resumeSong}
+              audioControl={this.audioControl}
+            />
+          </div>
+        </div>
+
+        <Player
+          stopSong={this.stopSong}
+          pauseSong={this.pauseSong}
+          resumeSong={this.resumeSong}
+          audioControl={this.audioControl}
+        />
       </div>
     );
   }

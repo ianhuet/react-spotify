@@ -6,7 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
-## [2.0.x] - 2020.xx.xx
+## [2.1.0] - 2020.10.xx
+## Changed
+- Migrate all CSS to CSS-in-JSS
+- Reorganise `components` into Atomic Design heirarchy
+- Change the UI layout for a responsive grid
+- Migrate smaller class components to functional components
+- Add Icon, PlayInfo components
+- Tweak tsconfig.json to simplfy Typescript adoption
+- Patch Redux error handling implementation issue highlighted by Typescript
 
 
 ## [2.0.2] - 2020.09.29
