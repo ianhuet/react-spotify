@@ -15,8 +15,8 @@ import {
   pauseSong,
   resumeSong,
 } from './actions/songActions'
-import { Player, Utility } from './components/molecules'
-import { MainHeader, SideMenu } from './components/organisms'
+import { Utility } from './components/molecules'
+import { MainHeader, PlayerBar, SideMenu } from './components/organisms'
 import { MainView } from './containers'
 import { SpotifyDark } from './theme'
 
@@ -187,7 +187,7 @@ const App = ({
           />
         </div>
 
-        <Player
+        <PlayerBar
           audioControl={audioController}
           pauseSong={handlePauseSong}
           resumeSong={handleResumeSong}

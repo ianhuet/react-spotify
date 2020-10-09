@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { createUseStyles, useTheme } from 'react-jss'
 import PropTypes from 'prop-types'
 
-import { Icon } from '../'
+import { Icon } from '../../atoms'
 
 const useStyles = createUseStyles((theme) => ({
   volumeControls: {

@@ -1,28 +1,29 @@
+// @ts-nocheck
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import PropTypes from 'prop-types'
 
-import { PlayControls, PlayInfo, VolumeControls } from '../atoms'
+import { PlayControls, PlayInfo, VolumeControls } from '../../molecules'
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles((theme) => ({
   player: {
     alignItems: 'center',
-    background: '#282828',
-    borderTop: '1px solid #181818',
+    background: theme.palette.black.tertiary,
+    borderTop: `1px solid ${theme.palette.black.primary}`,
     boxSizing: 'border-box',
     display: 'flex',
     gridArea: 'baseRow / secondaryCol / baseRow / 3',
     justifyContent: 'space-between',
-    padding: '0 20px',
+    padding: '0 14px',
   },
-})
+}))
 
-const Player = ({ audioControl, pauseSong, stopSong, resumeSong }) => {
+const PlayerBar = ({ audioControl, pauseSong, songDetails, stopSong, resumeSong }) => {
   const classes = useStyles()
   
   return (
     <div className={classes.player}>
-      <PlayInfo />
+      <PlayInfo songDetails={songDetails} />
 
       <PlayControls
         stopSong={stopSong}
@@ -35,11 +36,12 @@ const Player = ({ audioControl, pauseSong, stopSong, resumeSong }) => {
   )
 }
 
-Player.propTypes = {
+PlayerBar.propTypes = {
   audioControl: PropTypes.func,
   pauseSong: PropTypes.func,
+  songDetails: PropTypes.object,
   stopSong: PropTypes.func,
   resumeSong: PropTypes.func,
 }
 
-export default Player
+export default PlayerBar

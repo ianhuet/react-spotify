@@ -5,7 +5,7 @@ import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
-import { Icon } from '../'
+import { Icon } from '../../atoms'
 
 const useStyles = createUseStyles((theme) => ({
   playControls: {
