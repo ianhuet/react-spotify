@@ -81,6 +81,7 @@ const useStyles = createUseStyles((theme) => ({
 
 // TODO: add long name marquee
 // TODO: add Artwork magnifier UI
+// TODO: add Artwork link to currently playing main content
 
 const PlayInfo = ({ className, songDetails }) => {
   const theme = useTheme()

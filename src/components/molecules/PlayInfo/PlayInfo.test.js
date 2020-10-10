@@ -22,13 +22,17 @@ describe('PlayInfo displays expected content', () => {
     expect(screen.queryByTestId('artist-name')).not.toBeInTheDocument()
   })
 
-  test('when short content is presented', async () => {
+  test.only('when short content is presented', async () => {
     renderComponent(songDetails1)
   
     expect(screen.getByTestId('song-name')).toHaveTextContent('Words Remain')
     expect(screen.getByTestId('artist-name')).toHaveTextContent('Moderator')
+
+    const artwork = screen.getByTestId('artwork')
+    screen.debug(artwork)
+
     expect(screen.getByTestId('artwork')).toHaveAttribute('alt', 'Words Remain - Moderator')
-    // expect(screen.getByTestId('artwork')).toHaveAttribute('src', 'https://i.scdn.co/image/ab67616d00001e0231073ba528a43985280d4dc6')
+    expect(screen.getByTestId('artwork')).toHaveAttribute('src', 'https://i.scdn.co/image/ab67616d00001e0231073ba528a43985280d4dc6')
   })
 
   test('when long content is presented', async () => {
@@ -36,7 +40,9 @@ describe('PlayInfo displays expected content', () => {
   
     expect(screen.getByTestId('song-name')).toHaveTextContent('Sonata No. 2 in A Major, Op. 2 No. 2: I. Allegro vivace')
     expect(screen.getByTestId('artist-name')).toHaveTextContent('Ludwig van Beethoven, Paul Lewis')
-    expect(screen.getByTestId('artwork')).toHaveAttribute('alt', 'Sonata No. 2 in A Major, Op. 2 No. 2: I. Allegro vivace - Ludwig van Beethoven, Paul Lewis')
-    // expect(screen.getByTestId('artwork')).toHaveAttribute('src', 'https://i.scdn.co/image/ab67616d00001e025fbde95caaf1018f9af50f71')
+
+    const artwork = screen.getByTestId('artwork')
+    expect(artwork).toHaveAttribute('alt', 'Sonata No. 2 in A Major, Op. 2 No. 2: I. Allegro vivace - Ludwig van Beethoven, Paul Lewis')
+    expect(artwork).toHaveAttribute('src', 'https://i.scdn.co/image/ab67616d000048515fbde95caaf1018f9af50f71')
   })
 })

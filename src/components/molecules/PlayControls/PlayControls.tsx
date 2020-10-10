@@ -17,27 +17,35 @@ const useStyles = createUseStyles((theme) => ({
   controls: {
     alignItems: 'center',
     display: 'flex',
+    listStyleType: 'none',
     justifyContent: 'center',
-    marginBottom: '4px',
+    marginBottom: '10px',
 
-    '& .button': {
+    '& > *': {
+      margin: '0 6px',
+    },
+
+    '& .icon': {
       color: theme.palette.grey[1],
       cursor: 'pointer',
       padding: '0 5px',
 
-      '&.small': {
+      '&.small .fas': {
         fontSize: '16px',
       },
-      '&.large': {
-        fontSize: '40px',
-        '-webkit-text-stroke': `4px ${theme.palette.black.tertiary}`,
+      '&.large .far': {
+        fontSize: '36px',
       },
+      '&.redo .fas': {
+        transform: 'rotate(135deg)',
+      }
     },
   },
 
   progress: {
     alignItems: 'center',
     display: 'flex',
+    height: '14px',
     justifyContent: 'center',
     width: '100%',
 
@@ -68,6 +76,9 @@ const useStyles = createUseStyles((theme) => ({
   }
 }))
 
+// TODO: add random playback function
+// TODO: add loop playback function
+
 export const PlayControls = ({
   audioControl,
   className,
@@ -87,19 +98,35 @@ export const PlayControls = ({
   const [songTime, setSongTime] = useState(timeElapsed)
   const [intervalId, setIntervalId] = useState(false)
 
+  // console.log('PC', songPlaying, songPaused, timeElapsed, intervalId)
+
   useEffect(() => {
     const calculateTime = () => {
-      const interval = setInterval(() => {
-        if (timeElapsed === 30) {
-          clearInterval(intervalId)
-          stopSong()
-        } else if (!songPaused) {
-          increaseSongTime(timeElapsed + 1)
-        }
-      }, 1000)
-  
-      setIntervalId(interval)
+      // const interval = setInterval(() => {
+      //   if (timeElapsed === 30) {
+      //     clearInterval(intervalId)
+      //     stopSong()
+      //   } else if (!songPaused) {
+      //     increaseSongTime(timeElapsed + 1)
+      //   }
+      // }, 1000)
+
+      setIntervalId(
+        setInterval(() => {
+
+          // console.log('setTimeInterval')
+
+          if (timeElapsed === 30) {
+            clearInterval(intervalId)
+            stopSong()
+          } else if (!songPaused) {
+            increaseSongTime(timeElapsed + 1)
+          }
+        }, 1000)
+      )
     }
+
+    // console.log('useEffect', songPlaying, timeElapsed)
 
     if (!songPlaying) {
       clearInterval(intervalId)
@@ -111,7 +138,7 @@ export const PlayControls = ({
     }
 
     setSongTime(timeElapsed)
-  }, [])
+  }, [songPlaying, timeElapsed])
 
   const getSongIndex = () =>
     songs.map((song, index) =>
@@ -119,38 +146,49 @@ export const PlayControls = ({
     )
     .filter(item => item !== undefined)[0]
 
-  const handlePlayPauseSong = () => !songPaused ? pauseSong : resumeSong
+  const handleRandomPlayback = () => console.log('TODO: add random playback function')
   const handleNextSong = () => {
     let currentIndex = getSongIndex()
     currentIndex === songs.length - 1 ? audioControl(songs[0]) : audioControl(songs[currentIndex + 1])
   }
+  const handlePlayPauseSong = () => !songPaused ? pauseSong() : resumeSong()
   const handlePrevSong = () => {
     let currentIndex = getSongIndex()
     currentIndex === 0 ? audioControl(songs[songs.length - 1]) : audioControl(songs[currentIndex - 1])
   }
+  const handleLoopPlayback = () => console.log('TODO: add loop playback function')
 
-  const buttonPlayPauseIcon = songPaused ? 'play-circle-o' : 'pause-circle-o'
+  const buttonPlayPauseIcon = songPaused ? 'play-circle' : 'pause-circle'
   const formattedTime = (time) => moment().minutes(0).second(time).format('m:ss')
 
   const playControlStyles = clsx(
     classes.playControls,
     className && `${className}`
   )
-  const timeStyles = clsx('time', songTime === 0 && 'inactive')
+  const timeStyles = clsx(
+    'time',
+    songTime === 0 && 'inactive'
+  )
 
   return (
     <div className={playControlStyles}>
-      <div className={classes.controls}>
-        <a onClick={handlePrevSong} className='button small'>
+      <ul className={classes.controls}>
+        <li onClick={handleRandomPlayback} className='icon small'>
+          <Icon name='random' className='disabled' />
+        </li>
+        <li onClick={handlePrevSong} className='icon small'>
           <Icon name='step-backward' />
-        </a>
-        <a onClick={handlePlayPauseSong}>
-          <Icon name={buttonPlayPauseIcon} className='button large' />
-        </a>
-        <a onClick={handleNextSong} className='button small'>
+        </li>
+        <li onClick={handlePlayPauseSong} className='icon large'>
+          <Icon name={`${buttonPlayPauseIcon}`} iconSet='far' />
+        </li>
+        <li onClick={handleNextSong} className='icon small'>
           <Icon name='step-forward' />
-        </a>
-      </div>
+        </li>
+        <li onClick={handleLoopPlayback} className='icon small redo'>
+          <Icon name='redo' className='disabled' />
+        </li>
+      </ul>
 
       <div className={classes.progress}>
         <p className={timeStyles}>

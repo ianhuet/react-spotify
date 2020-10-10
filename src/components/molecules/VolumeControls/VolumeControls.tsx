@@ -1,7 +1,8 @@
 // @ts-nocheck
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createUseStyles, useTheme } from 'react-jss'
-import { Range, getTrackBackground } from 'react-range'
+// import { Range, getTrackBackground } from 'react-range'
+import { Range, getTrackBackground } from '../../range-slider'
 import PropTypes from 'prop-types'
 
 import { Icon } from '../../atoms'
@@ -23,7 +24,7 @@ const useStyles = createUseStyles((theme) => ({
   },
 
   muteToggle: {
-    marginRight: '14px',
+    display: 'inline-flex',
     width: '14px',
   },
 
@@ -32,6 +33,7 @@ const useStyles = createUseStyles((theme) => ({
     display: 'flex',
     flexFlow: 'row nowrap',
     height: '14px',
+    padding: '20px 15px',
     position: 'relative',
     outline: 'none',
     width: '100px',
@@ -74,16 +76,14 @@ const useStyles = createUseStyles((theme) => ({
   },
 
   fullscreenToggle: {
-    marginLeft: '18px',
-
     '& .icon': {
       fontSize: '18px',
     },
   }
 }))
 
-// TODO: add Fullscreen mode
-// TODO: add Queue
+// TODO: add Fullscreen toggle functionality
+// TODO: add Queue icon/link
 
 const VolumeControls = ({
   updateVolumeAction,
@@ -95,11 +95,14 @@ const VolumeControls = ({
   const [volumeState, setVolumeState] = useState(0)
   const [volumeEnabled, setVolumeEnabled] = useState(true)
 
+  const rangeStep = 1
   const rangeMin = 0
   const rangeMax = 100
-
-  const calcRangeVolume = (value) => Math.ceil(value / 10) * 10
   const volumeIcon = volumeEnabled ? 'volume-up' : 'volume-mute'
+
+  useEffect(() => {
+    setVolumeState(volume)
+  }, [])
 
   const handleVolumeToggle = () => {
     if (volumeEnabled) {
@@ -108,86 +111,82 @@ const VolumeControls = ({
       updateVolumeAction(0)
     } else {
       setVolumeEnabled(true)
-      setVolumeState(volumeState)
-      updateVolumeAction(calcRangeVolume(volumeState))
+      // setVolumeState(volumeState)
+      updateVolumeAction(volumeState)
     }
   }
   const handleVolumeChange = (value) => {
-    setVolumeState(value)
-    updateVolumeAction(calcRangeVolume(volumeState))
+    setVolumeState(value[0])
+    updateVolumeAction(value[0])
   }
-  // const handleFullscreenToggle = () => {
-  //   console.log('Toggle Fullscreen')
-  // }
+  const handleFullscreenToggle = () => {
+    console.log('TODO: add fullscreen toggle function')
+  }
 
   return (
     <div className={classes.volumeControls}>
-      <div onClick={handleVolumeToggle} className={classes.muteToggle}>
+      <div
+        className={classes.muteToggle}
+        onClick={handleVolumeToggle}
+        role='button'
+        aria-label={volumeEnabled ? 'Mute playback' : 'Unmute playback' }
+      >
         <Icon name={volumeIcon} className='icon' />
       </div>
 
       <div className={classes.range}>
         <Range
+          customCursor='default'
           values={[volume]}
-          step={1}
+          step={rangeStep}
           min={rangeMin}
           max={rangeMax}
           onChange={(values) => handleVolumeChange(values)}
-          renderTrack={({ props, isDragged, children }) => {
-            
-            return (
+          renderTrack={({ props, isDragged, children }) => (
+            <div
+              className='range__track'
+              onMouseDown={props.onMouseDown}
+              onTouchStart={props.onTouchStart}
+              style={{ ...props.style }}
+            >
               <div
-                className='range__track'
-                onMouseDown={props.onMouseDown}
-                onTouchStart={props.onTouchStart}
-                style={{ ...props.style }}
+                className='range__track--active'
+                ref={props.ref}
+                style={{
+                  background: getTrackBackground({
+                    values: [volume],
+                    colors: [
+                      isDragged ? theme.palette.primary.main : theme.palette.grey[1],
+                      theme.palette.grey[4]
+                    ],
+                    min: rangeMin,
+                    max: rangeMax,
+                  }),
+                }}
               >
-                <div
-                  className='range__track--active'
-                  ref={props.ref}
-                  style={{
-                    background: getTrackBackground({
-                      values: [volume],
-                      colors: [
-                        isDragged ? theme.palette.primary.main : theme.palette.grey[1],
-                        theme.palette.grey[4]
-                      ],
-                      min: rangeMin,
-                      max: rangeMax,
-                    }),
-                  }}
-                >
-                  {children}
-                </div>
+                {children}
               </div>
-            )}
-          }
-          renderThumb={({ props }) => {
-            const styleWithoutCursor = Object.keys(props.style)
-              .filter((key) => key !== 'cursor')
-              .reduce((obj, key) => {
-                obj[key] = props.style[key]
-                return obj
-              }, {})
-
-            return (
-              <div
-                {...props}
-                className='range__thumb'
-                style={{ ...styleWithoutCursor }}
-              >
-                <div className='range__thumb--active' />
-              </div>
-            )}
-          }
+            </div>
+          )}
+          renderThumb={({ props }) => (
+            <div
+              {...props}
+              className='range__thumb'
+              style={{ ...props.style }}
+              aria-label='Adjust playback volume'
+              aria-valuemin={rangeMin}
+              aria-valuemax={rangeMax}
+              aria-valuenow={volume}
+            >
+              <div className='range__thumb--active' />
+            </div>
+          )}
         />
       </div>
 
-      {/*
-        <div onClick={handleFullscreenToggle} className={classes.fullscreenToggle}>
-          <Icon name='expand-alt' className='icon' />
-        </div>
-      */}
+      <div onClick={handleFullscreenToggle} className={classes.fullscreenToggle}>
+        <Icon name='expand-alt' className='icon disabled' />
+      </div>
     </div>
   )
 }

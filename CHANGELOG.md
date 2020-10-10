@@ -8,11 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ## [2.1.2] - 2020.xx.xx
 ## Changed
-- Refactor PlayerBar and used molecules (PlayInfo, PlayerControls, VolumeControl)
-- Extract redux state away from molecules up into PlayerBar
-- Add test coverage to molecules
+- Refactor PlayerBar and related Molecules (PlayInfo, PlayerControls, VolumeControls)
+- Extract redux state away from Molecules up into PlayerBar
+- Start test coverage to Molecules with React-test-Library
 - Refactor Artwork component
-- Install React-Slider for VolumeControl
+- Install React-Range for VolumeControl, held locally while PR open to resolve cursor styling issue
+- Update Font Awesome to v.5+
+
 
 
 ## [2.1.1] - 2020.10.09
