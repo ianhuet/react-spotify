@@ -112,9 +112,9 @@ const App = ({
   }, [])
 
   useEffect(() => {
-    Object.keys(cssBaseline).map((styleKey) => {
+    Object.keys(cssBaseline).map((styleKey) =>
       document.body.style[styleKey] = cssBaseline[styleKey]
-    })
+    )
   }, [])
 
   useEffect(() => {

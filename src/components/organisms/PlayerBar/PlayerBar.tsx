@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react'
-import { createUseStyles } from 'react-jss'
+import { createUseStyles, useTheme } from 'react-jss'
 import PropTypes from 'prop-types'
 
 import { PlayControls, PlayInfo, VolumeControls } from '../../molecules'
@@ -12,26 +12,59 @@ const useStyles = createUseStyles((theme) => ({
     borderTop: `1px solid ${theme.palette.black.primary}`,
     boxSizing: 'border-box',
     display: 'flex',
+    gap: '60px',
     gridArea: 'baseRow / secondaryCol / baseRow / 3',
     justifyContent: 'space-between',
     padding: '0 14px',
+    width: '100%',
+
+    '& .playInfo': {
+      flex: '0 1 auto',
+      maxWidth: '220px',
+    },
+    '& .playControls': {
+      flex: '2 1 auto',
+      justifyContent:'center',
+    },
+    '& .volumeControl': {
+      flex: '0 1 auto',
+      maxWidth: '220px',
+    },
   },
 }))
 
-const PlayerBar = ({ audioControl, pauseSong, songDetails, stopSong, resumeSong }) => {
-  const classes = useStyles()
+const PlayerBar = ({
+  audioControl,
+  pauseSong,
+  songDetails,
+  stopSong,
+  resumeSong,
+  updateVolumeAction,
+  volume,
+}) => {
+  const theme = useTheme()
+  const classes = useStyles({ theme })
   
   return (
     <div className={classes.player}>
-      <PlayInfo songDetails={songDetails} />
+      <PlayInfo
+        className='playInfo'
+        songDetails={songDetails}
+      />
 
       <PlayControls
-        stopSong={stopSong}
+        className='playControls'
+        audioControl={audioControl}
         pauseSong={pauseSong}
         resumeSong={resumeSong}
-        audioControl={audioControl}
+        stopSong={stopSong}
       />
-      <VolumeControls />
+
+      <VolumeControls
+        className='volumeControls'
+        updateVolumeAction={updateVolumeAction}
+        volume={volume}
+      />
     </div>
   )
 }
@@ -42,6 +75,8 @@ PlayerBar.propTypes = {
   songDetails: PropTypes.object,
   stopSong: PropTypes.func,
   resumeSong: PropTypes.func,
+  updateVolumeAction: PropTypes.func,
+  volume: PropTypes.number,
 }
 
 export default PlayerBar

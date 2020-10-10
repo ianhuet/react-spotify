@@ -11,7 +11,7 @@ const useStyles = createUseStyles((theme) => ({
   playControls: {
     alignItems: 'center',
     display: 'flex',
-    flexFlow: 'row nowrap',
+    flexFlow: 'column nowrap',
   },
 
   controls: {
@@ -21,7 +21,7 @@ const useStyles = createUseStyles((theme) => ({
     marginBottom: '4px',
 
     '& .button': {
-      color: '#b3b3b3',
+      color: theme.palette.grey[1],
       cursor: 'pointer',
       padding: '0 5px',
 
@@ -30,7 +30,7 @@ const useStyles = createUseStyles((theme) => ({
       },
       '&.large': {
         fontSize: '40px',
-        '-webkit-text-stroke': '4px #282828',
+        '-webkit-text-stroke': `4px ${theme.palette.black.tertiary}`,
       },
     },
   },
@@ -39,6 +39,7 @@ const useStyles = createUseStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
+    width: '100%',
 
     '& .time': {
       fontSize: '12px',
@@ -48,25 +49,28 @@ const useStyles = createUseStyles((theme) => ({
       },
     },
 
-    '& .barBg': {
+    '& .track': {
       background: theme.palette.grey[4],
       borderRadius: theme.borderRadius.small,
       height: '4px',
       margin: '0 10px',
-      width: '500px',
+      maxWidth: '500px',
+      minWidth: '200px',
+      width: '100%',
     },
-    '& .bar': {
+    '& .progress': {
       background: theme.palette.grey[2],
       borderRadius: theme.borderRadius.small,
       height: '4px',
-      margin: '0',
-      width: '100px',
+      margin: 0,
+      width: 0,
     }
   }
 }))
 
 export const PlayControls = ({
   audioControl,
+  className,
   increaseSongTime,
   pauseSong,
   resumeSong,
@@ -128,34 +132,36 @@ export const PlayControls = ({
   const buttonPlayPauseIcon = songPaused ? 'play-circle-o' : 'pause-circle-o'
   const formattedTime = (time) => moment().minutes(0).second(time).format('m:ss')
 
+  const playControlStyles = clsx(
+    classes.playControls,
+    className && `${className}`
+  )
+  const timeStyles = clsx('time', songTime === 0 && 'inactive')
+
   return (
-    <div className={classes.playControls}>
-      <div>
-        <div className={classes.controls}>
-          <a onClick={handlePrevSong} className='button small'>
-            <Icon name='step-backward' />
-          </a>
+    <div className={playControlStyles}>
+      <div className={classes.controls}>
+        <a onClick={handlePrevSong} className='button small'>
+          <Icon name='step-backward' />
+        </a>
+        <a onClick={handlePlayPauseSong}>
+          <Icon name={buttonPlayPauseIcon} className='button large' />
+        </a>
+        <a onClick={handleNextSong} className='button small'>
+          <Icon name='step-forward' />
+        </a>
+      </div>
 
-          <a onClick={handlePlayPauseSong}>
-            <Icon name={buttonPlayPauseIcon} className='button large' />
-          </a>
-
-          <a onClick={handleNextSong} className='button small'>
-            <Icon name='step-forward' />
-          </a>
+      <div className={classes.progress}>
+        <p className={timeStyles}>
+          {formattedTime(songTime)}
+        </p>
+        <div className='track'>
+          <div style={{ width: songTime * 16.5 }} className='progress' />
         </div>
-
-        <div className={classes.progress}>
-          <p className={clsx('time', songTime === 0 && 'inactive')}>
-            {formattedTime(songTime)}
-          </p>
-          <div className='barBg'>
-            <div style={{ width: songTime * 16.5 }} className='bar' />
-          </div>
-          <p className={clsx('time', songTime === 0 && 'inactive')}>
-            {formattedTime(30 - songTime)}
-          </p>
-        </div>
+        <p className={timeStyles}>
+          {formattedTime(30 - songTime)}
+        </p>
       </div>
     </div>
   )
@@ -164,6 +170,7 @@ export const PlayControls = ({
 PlayControls.propTypes = {
   artistName: PropTypes.string,
   audioControl: PropTypes.func,
+  className: PropTypes.string,
   increaseSongTime: PropTypes.func,
   pauseSong: PropTypes.func,
   resumeSong: PropTypes.func,

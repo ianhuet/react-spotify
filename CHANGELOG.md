@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extract redux state away from molecules up into PlayerBar
 - Add test coverage to molecules
 - Refactor Artwork component
-
+- Install React-Slider for VolumeControl
 
 
 ## [2.1.1] - 2020.10.09

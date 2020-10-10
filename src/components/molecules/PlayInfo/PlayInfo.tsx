@@ -2,6 +2,7 @@
 import React from 'react'
 import { createUseStyles, useTheme } from 'react-jss'
 import PropTypes from 'prop-types'
+import clsx from 'clsx'
 
 import { Artwork } from '../../atoms'
 import { imageSizes } from '../../../constants'
@@ -13,7 +14,7 @@ const useStyles = createUseStyles((theme) => ({
     flexFlow: 'row nowrap',
     position: 'relative',
     overflow: 'hidden',
-    width: '225px',
+    width: '100%',
 
     '&:after': {
       boxShadow: `inset -6px 0px 10px -3px ${theme.palette.black.tertiary}`,
@@ -81,7 +82,7 @@ const useStyles = createUseStyles((theme) => ({
 // TODO: add long name marquee
 // TODO: add Artwork magnifier UI
 
-const PlayInfo = ({ songDetails }) => {
+const PlayInfo = ({ className, songDetails }) => {
   const theme = useTheme()
   const classes = useStyles({ theme })
 
@@ -95,8 +96,13 @@ const PlayInfo = ({ songDetails }) => {
 
   // const isOverflown = ({ element }) => element.scrollWidth > element.clientWidth
 
+  const playInfoStyles = clsx(
+    classes.playInfo,
+    className && `${className}`
+  )
+
   return (
-    <div className={classes.playInfo} data-testid='play-info'>
+    <div className={playInfoStyles} data-testid='play-info'>
       {
         hasCurrentSong &&
         <>
@@ -123,6 +129,7 @@ const PlayInfo = ({ songDetails }) => {
 }
 
 PlayInfo.propTypes = {
+  className: PropTypes.string,
   songDetails: PropTypes.object,
 }
 
