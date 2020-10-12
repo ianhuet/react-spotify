@@ -2,21 +2,21 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import { PlayControls } from './PlayControls'
-import { increaseSongTime } from '../../../actions/songActions'
+import { increaseSongTime } from '../../../features/songsSlice'
 
 const mapStateToProps = (state) => {
   return {
-    songName: state.songsReducer.songDetails
-      ? state.songsReducer.songDetails.name
+    songName: state.songs.songDetails
+      ? state.songs.songDetails.name
       : '',
-    artistName: state.songsReducer.songDetails
-      ? state.songsReducer.songDetails.artists[0].name
+    artistName: state.songs.songDetails
+      ? state.songs.songDetails.artists[0].name
       : '',
-    songPlaying: state.songsReducer.songPlaying,
-    timeElapsed: state.songsReducer.timeElapsed,
-    songPaused: state.songsReducer.songPaused,
-    songDetails: state.songsReducer.songDetails,
-    songs: state.songsReducer.songs
+    songPlaying: state.songs.songPlaying,
+    timeElapsed: state.songs.timeElapsed,
+    songPaused: state.songs.songPaused,
+    songDetails: state.songs.songDetails,
+    songs: state.songs.songs
   }
 }
 

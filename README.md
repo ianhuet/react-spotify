@@ -19,7 +19,7 @@ visit http://localhost:3000
 
 ### Technology Stack
 - Bootstrapped with Create-React-App
-- State handled with Redux
+- State handled with Redux & Redux-Toolkit
 - Styled with JSS
 - HTMLAudioElement API for song playback
 
@@ -33,7 +33,6 @@ Spotify uses OAuth2 for authentication and authorization. On initial setup [App 
 
 ### Application Structure
 Components are organised under a loose interptretation of the [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/) system.
-
 
 ### Deployment
 The application is automatically [deployed onto Vercel](https://react-spotify-2.ianhuet.vercel.app) courtesy of a webhook on the Master branch, and Vercels splendid, free tooling.

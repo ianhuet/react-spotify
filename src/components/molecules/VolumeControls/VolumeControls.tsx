@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { createUseStyles, useTheme } from 'react-jss'
-// import { Range, getTrackBackground } from 'react-range'
-import { Range, getTrackBackground } from '../../range-slider'
+import { Range, getTrackBackground } from 'react-range'
 import PropTypes from 'prop-types'
 
 import { Icon } from '../../atoms'
@@ -86,7 +85,7 @@ const useStyles = createUseStyles((theme) => ({
 // TODO: add Queue icon/link
 
 const VolumeControls = ({
-  updateVolumeAction,
+  updateVolume,
   volume,
 }) => {
   const theme = useTheme()
@@ -108,16 +107,15 @@ const VolumeControls = ({
     if (volumeEnabled) {
       setVolumeEnabled(false)
       setVolumeState(volume)
-      updateVolumeAction(0)
+      updateVolume(0)
     } else {
       setVolumeEnabled(true)
-      // setVolumeState(volumeState)
-      updateVolumeAction(volumeState)
+      updateVolume(volumeState)
     }
   }
   const handleVolumeChange = (value) => {
     setVolumeState(value[0])
-    updateVolumeAction(value[0])
+    updateVolume(value[0])
   }
   const handleFullscreenToggle = () => {
     console.log('TODO: add fullscreen toggle function')
@@ -136,7 +134,6 @@ const VolumeControls = ({
 
       <div className={classes.range}>
         <Range
-          customCursor='default'
           values={[volume]}
           step={rangeStep}
           min={rangeMin}
@@ -147,7 +144,10 @@ const VolumeControls = ({
               className='range__track'
               onMouseDown={props.onMouseDown}
               onTouchStart={props.onTouchStart}
-              style={{ ...props.style }}
+              style={{
+                ...props.style,
+                cursor: 'default',
+              }}
             >
               <div
                 className='range__track--active'
@@ -172,7 +172,10 @@ const VolumeControls = ({
             <div
               {...props}
               className='range__thumb'
-              style={{ ...props.style }}
+              style={{
+                ...props.style,
+                cursor: 'default',
+              }}
               aria-label='Adjust playback volume'
               aria-valuemin={rangeMin}
               aria-valuemax={rangeMax}
@@ -192,7 +195,7 @@ const VolumeControls = ({
 }
 
 VolumeControls.propTypes = {
-  updateVolumeAction: PropTypes.func,
+  updateVolume: PropTypes.func,
   volume: PropTypes.number,
 }
 

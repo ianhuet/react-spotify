@@ -12,9 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extract redux state away from Molecules up into PlayerBar
 - Start test coverage to Molecules with React-test-Library
 - Refactor Artwork component
-- Install React-Range for VolumeControl, held locally while PR open to resolve cursor styling issue
+- Install React-Range for VolumeControls
 - Update Font Awesome to v.5+
-
+- Refactor entry point
 
 
 ## [2.1.1] - 2020.10.09

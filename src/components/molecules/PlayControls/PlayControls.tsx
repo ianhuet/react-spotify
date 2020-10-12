@@ -26,9 +26,13 @@ const useStyles = createUseStyles((theme) => ({
     },
 
     '& .icon': {
-      color: theme.palette.grey[1],
-      cursor: 'pointer',
+      color: theme.palette.white.secondary,
+      cursor: 'default',
       padding: '0 5px',
+
+      '&:hover': {
+        color: theme.palette.white.primary,
+      },
 
       '&.small .fas': {
         fontSize: '16px',

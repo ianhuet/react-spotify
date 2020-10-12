@@ -39,7 +39,7 @@ const PlayerBar = ({
   songDetails,
   stopSong,
   resumeSong,
-  updateVolumeAction,
+  updateVolume,
   volume,
 }) => {
   const theme = useTheme()
@@ -62,7 +62,7 @@ const PlayerBar = ({
 
       <VolumeControls
         className='volumeControls'
-        updateVolumeAction={updateVolumeAction}
+        updateVolume={updateVolume}
         volume={volume}
       />
     </div>
@@ -75,7 +75,7 @@ PlayerBar.propTypes = {
   songDetails: PropTypes.object,
   stopSong: PropTypes.func,
   resumeSong: PropTypes.func,
-  updateVolumeAction: PropTypes.func,
+  updateVolume: PropTypes.func,
   volume: PropTypes.number,
 }
 
