@@ -1,16 +1,28 @@
 // @ts-nocheck
+<<<<<<< HEAD
 import React, { useEffect } from 'react'
+=======
+import React, { useEffect, useState } from 'react'
+>>>>>>> 2894ad0... migrate App component to use Redux hooks
 import { useSelector, useDispatch } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import { ThemeProvider } from 'theming'
 import clsx from 'clsx'
 
 import {
+<<<<<<< HEAD
   pausePlayback,
   resetPlayback,
   resumePlayback,
   startPlayback,
 } from '../../features/playerSlice'
+=======
+  playSong,
+  stopSong,
+  pauseSong,
+  resumeSong,
+} from '../../features/songsSlice'
+>>>>>>> 2894ad0... migrate App component to use Redux hooks
 import { setToken } from '../../features/tokenSlice'
 import { fetchUser } from '../../features/userSlice'
 
@@ -61,11 +73,21 @@ const App = () => {
   const dispatch = useDispatch()
 
   const token = useSelector(state => state.token.token)
+<<<<<<< HEAD
   const volume = useSelector(state => state.player.volume)
 
   useEffect(() => {
     function getAuthorisationUrl() {
       const clientId = process.env.REACT_APP_CLIENT_ID
+=======
+  const volume = useSelector(state => state.sound.volume)
+
+  const [htmlAudioObj, setHtmlAudioObj] = useState(undefined)
+
+  useEffect(() => {
+    function getAuthorisationUrl() {
+      const clientId = '47e2c485aa3c47a6a39e71bb2fcf4da4'
+>>>>>>> 2894ad0... migrate App component to use Redux hooks
       const redirectUri = process.env.REACT_APP_REDIRECT_URI
       const scopes = [
         'playlist-read-private',
