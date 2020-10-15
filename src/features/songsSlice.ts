@@ -5,10 +5,6 @@ import { setArtistIds } from '../actions/artistActions'
 
 const initialState = {
   fetchSongsPending: true,
-  songId: 0,
-  songPaused: true,
-  songPlaying: false,
-  timeElapsed: 0,
   viewType: 'songs',
 }
 
@@ -81,25 +77,9 @@ const songsStoreSlice = createSlice({
       state.searchSongsPending = false
       state.viewType = 'search'
     },
-
-    increaseSongTime: (state, action) => { state.timeElapsed = action.payload },
-    playSong: (state, action) => {
-      state.songPlaying = true
-      state.songDetails = action.song
-      state.songId = action.song.id
-      state.timeElapsed = 0
-      state.songPaused = fals
+    updateViewType: (state, action) => {
+      state.viewType = action.payload
     },
-    pauseSong: (state, _action) => { state.songPaused = true },
-    resumeSong: (state, _action) =>  { state.songPaused = false },
-    stopSong: (state, _action) => {
-      state.songDetails = null
-      state.songPlaying = false
-      state.songPaused = true
-      state.timeElapsed = 0
-    },
-
-    updateViewType: (state, action) => { state.viewType = action.payload },
   }
 })
 
@@ -219,11 +199,6 @@ export const {
   searchSongsError,
   searchSongsPending,
   searchSongsSuccess,
-  increaseSongTime,
-  playSong,
-  pauseSong,
-  resumeSong,
-  stopSong,
   updateViewType,
 } = songsStoreSlice.actions
 

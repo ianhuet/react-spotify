@@ -1,12 +1,22 @@
 // @ts-nocheck
 import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { createUseStyles } from 'react-jss'
 import clsx from 'clsx'
-import PropTypes from 'prop-types'
 import key from 'weak-key'
 import moment from 'moment'
 
 import { Icon } from '../../atoms'
+import { 
+  resetPlayback
+} from '../../../features/playerSlice'
+import { 
+  // fetchPlaylistSongsPending,
+  fetchSongs,
+  fetchSongsError,
+  fetchSongsPending
+} from '../../../features/songsSlice'
+import { addSongToLibrary } from '../../../features/userSlice'
 
 const useStyles = createUseStyles({
   songList: {
@@ -123,6 +133,11 @@ const useStyles = createUseStyles({
       },
     },
 
+    '& .play-btn': {
+      color: '#FFFFFF',
+      cursor: 'pointer',
+      fontSize: '20px',
+    },
     '& .add-song': {
       color: '#FFFFFF',
       cursor: 'pointer',
@@ -141,24 +156,16 @@ const useStyles = createUseStyles({
   }
 })
 
-const SongList = ({
-  addSongToLibrary,
-  audioControl,
-  fetchPlaylistSongsPending,
-  fetchSongs,
-  fetchSongsError,
-  fetchSongsPending,
-  pauseSong,
-  resumeSong,
-  songAddedId,
-  songId,
-  songPaused,
-  songPlaying,
-  songs,
-  token,
-  viewType,
-}) => {
+const SongList = ({ audioControl, resumeSong, pauseSong }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+
+  const songAddedId = useSelector(state => state.user.songId)
+  const viewType = useSelector(state => state.songs.viewType)
+  const token = useSelector(state => state.token.token)
+  const songs = useSelector(state => state.songs.songs)
+
+  const { trackId, trackPaused } = useSelector(state => state.player)
 
   useEffect(() => {
     if (
@@ -177,39 +184,48 @@ const SongList = ({
     return minutes + ':' + (seconds < 10 ? '0' : '') + seconds
   }
 
+  const handlePlaybackLink = (song) => {
+    if (song.track.id !== trackId) {
+      dispatch(resetPlayback())
+      audioControl(song)
+    }
+    else if (!!trackId && trackPaused) {
+      resumeSong()
+    }
+    else if (!!trackId && !trackPaused) {
+      pauseSong()
+    }
+  }
+
   const renderSongsTable = () => {
     return songs.map((song) => {
-      const buttonClass =
-        song.track.id === songId && !songPaused
+      const buttonIcon =
+        trackId === song.track.id && !trackPaused
           ? 'pause-circle'
           : 'play-circle'
 
+      const songRowStyles = clsx(
+        'song-row',
+        trackId === song.track.id && 'active'
+      )
+
       return (
         <li
-          className={clsx(
-            'song-row',
-            song.track.id === songId && 'active'
-          )}
+          className={songRowStyles}
           key={key(song)}
         >
           <div
-            onClick={() => {
-              song.track.id === (songId && songPlaying && songPaused)
-                ? resumeSong()
-                : (songPlaying && !songPaused && song.track.id === songId)
-                  ? pauseSong()
-                  : audioControl(song)
-            }}
+            onClick={() => handlePlaybackLink(song)}
             className='play-song'
           >
-            <Icon name={buttonClass} className='play-btn' />
+            <Icon name={buttonIcon} className='play-btn' />
           </div>
 
           {viewType !== 'songs' && (
             <p
               className='add-song'
               onClick={() => {
-                addSongToLibrary(token, song.track.id)
+                dispatch(addSongToLibrary(token, song.track.id))
               }}
             >
               {songAddedId === song.track.id ? (
@@ -273,29 +289,11 @@ const SongList = ({
       </div>
 
       {
-        (songs && !fetchSongsPending && !fetchPlaylistSongsPending) &&
+        (songs) && // !fetchSongsPending && !fetchPlaylistSongsPending) &&
         renderSongsTable()
       }
     </div>
   )
-}
-
-SongList.propTypes = {
-  addSongToLibrary: PropTypes.func,
-  audioControl: PropTypes.func,
-  fetchPlaylistSongsPending: PropTypes.bool,
-  fetchSongs: PropTypes.func,
-  fetchSongsError: PropTypes.bool,
-  fetchSongsPending: PropTypes.bool,
-  pauseSong: PropTypes.func,
-  resumeSong: PropTypes.func,
-  songAddedId: PropTypes.string,
-  songId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  songPaused: PropTypes.bool,
-  songPlaying: PropTypes.bool,
-  songs: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  token: PropTypes.string,
-  viewType: PropTypes.string,
 }
 
 export default SongList
