@@ -1,11 +1,12 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { createUseStyles, useTheme } from 'react-jss'
 import clsx from 'clsx'
 
+import { startPlayback } from '../../../features/playerSlice'
+
 import { Icon } from '../../atoms'
-import { resetPlayback } from '../../../features/playerSlice'
 import { ProgressBar } from '../'
 
 const useStyles = createUseStyles((theme) => ({
@@ -50,6 +51,7 @@ const useStyles = createUseStyles((theme) => ({
 
 // TODO: add random playback function
 // TODO: add loop playback function
+// TODO: add full track playback
 
 const PlayControls = ({
   audioControl,
@@ -61,17 +63,10 @@ const PlayControls = ({
   const classes = useStyles({ theme })
   const dispatch = useDispatch()
 
-  const songs = useSelector(state => state.songs.song)
+  const songs = useSelector(state => state.songs.songs)
   const { trackId, trackDetails, trackPaused } = useSelector(state => state.player)
-  const [isTrackPlaybackComplete, setIsTrackPlaybackComplete] = useState(false)
 
-  useEffect(() => {
-    if (isTrackPlaybackComplete) {
-      dispatch(resetPlayback())
-    }
-  }, [isTrackPlaybackComplete])
-
-  const getSongIndex = () =>
+  const getCurrentSongIndex = () =>
     songs.map((song, index) =>
       (song.track === trackDetails) ? index : undefined
     )
@@ -79,15 +74,23 @@ const PlayControls = ({
 
   const handleRandomPlayback = () => null
   const handleNextSong = () => {
-    let currentIndex = getSongIndex()
+    let currentIndex = getCurrentSongIndex()
     currentIndex === songs.length - 1 ? audioControl(songs[0]) : audioControl(songs[currentIndex + 1])
   }
   const handlePlayPauseSong = () => !trackPaused ? pauseSong() : resumeSong()
   const handlePrevSong = () => {
-    let currentIndex = getSongIndex()
+    let currentIndex = getCurrentSongIndex()
     currentIndex === 0 ? audioControl(songs[songs.length - 1]) : audioControl(songs[currentIndex - 1])
   }
   const handleLoopPlayback = () => null
+
+  const cueNextTrack = () => {
+    let currentIndex = getCurrentSongIndex()
+    if (currentIndex < songs.length - 1) {
+      dispatch(startPlayback(songs[currentIndex + 1]))
+      audioControl(songs[currentIndex + 1])
+    }
+  }
 
   const playbackButtonIcon = trackPaused ? 'play-circle' : 'pause-circle'
   const playControlStyles = clsx(
@@ -96,7 +99,7 @@ const PlayControls = ({
   )
 
   return (
-    <div className={playControlStyles}>
+    <div className={playControlStyles} data-testid='play-controls'>
       <ul className={classes.controls}>
         <li onClick={handleRandomPlayback} className='icon small'>
           <Icon name='random' className='disabled' />
@@ -116,8 +119,9 @@ const PlayControls = ({
       </ul>
 
       <ProgressBar
-        trackId={trackId}
+        cueNextTrack={cueNextTrack}
         isPaused={trackPaused}
+        trackId={trackId}
         trackLengthMs={30000}
       />
     </div>
